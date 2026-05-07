@@ -704,8 +704,8 @@ export class MarkdownRenderer extends Renderer {
     let inner = '';
 
     this.withSubIndent(() => {
-      inner = block.children
-        ?.map((childId) => {
+      inner = (block.children ?? [])
+        .map((childId) => {
           const child = this.blockMap[childId];
           return this.parseBlock(child, 0);
         })

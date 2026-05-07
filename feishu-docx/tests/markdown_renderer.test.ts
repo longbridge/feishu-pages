@@ -3,7 +3,7 @@ import assert from 'assert';
 import fs from 'fs';
 import { diff } from 'jest-diff';
 import path from 'path';
-import { MarkdownRenderer, TableMergeInfo } from '../src';
+import { BlockType, MarkdownRenderer, TableMergeInfo } from '../src';
 import { escapeHTMLTags } from '../src/renderer';
 
 const fixture = (filename: string): string => {
@@ -106,6 +106,37 @@ describe('MarkdownRenderer', () => {
     raw = `> This is first line.\n> This is second line.`;
     result = render.markdownToHTML(raw);
     expect = `<blockquote>\n<p>This is first line.<br/>This is second line.</p>\n</blockquote>\n`;
+  });
+
+  test('parse grid with empty column', () => {
+    const doc = {
+      document: { document_id: 'doc' },
+      blocks: [
+        {
+          block_id: 'doc',
+          block_type: BlockType.Page,
+          page: { elements: [] },
+          children: ['grid'],
+        },
+        {
+          block_id: 'grid',
+          block_type: BlockType.Grid,
+          grid: { column_size: 1 },
+          children: ['column'],
+        },
+        {
+          block_id: 'column',
+          block_type: BlockType.GridColumn,
+          grid_column: { width_ratio: 100 },
+        },
+      ],
+    };
+
+    const render = new MarkdownRenderer(doc as any);
+    const result = render.parse();
+
+    assert.match(result, /columns-1/);
+    assert.match(result, /width-ratio="100"/);
   });
 
   test('escapeHTMLTags', () => {
