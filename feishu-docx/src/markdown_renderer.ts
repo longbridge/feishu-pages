@@ -709,7 +709,7 @@ export class MarkdownRenderer extends Renderer {
           const child = this.blockMap[childId];
           return this.parseBlock(child, 0);
         })
-        .join('\n');
+        .join('\n') ?? '';
     });
 
     buf.write(this.markdownToHTML(inner));
