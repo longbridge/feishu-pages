@@ -236,7 +236,7 @@ export class MarkdownRenderer extends Renderer {
     const inline = textBlock.elements.length > 1;
 
     textBlock.elements?.forEach((el) => {
-      this.parseTextElement(buf, el, inline);
+      this.parseTextElement(buf, el, inline, block);
     });
 
     if (buf.length > 0) {
@@ -337,9 +337,9 @@ export class MarkdownRenderer extends Renderer {
     return buf;
   }
 
-  parseTextElement(buf: Buffer, el: TextElement, inline: boolean) {
+  parseTextElement(buf: Buffer, el: TextElement, inline: boolean, block: Block) {
     if (el.text_run) {
-      this.parseTextRun(buf, el.text_run);
+      this.parseTextRun(buf, el.text_run, block);
     } else if (el.equation) {
       let symbol = inline ? '$' : '$$';
       buf.write(symbol);
@@ -351,7 +351,7 @@ export class MarkdownRenderer extends Renderer {
     }
   }
 
-  parseTextRun(buf: Buffer, textRun: TextRun) {
+  parseTextRun(buf: Buffer, textRun: TextRun, block: Block) {
     let preWrite = '';
     let postWrite = '';
 
@@ -361,7 +361,10 @@ export class MarkdownRenderer extends Renderer {
       if (style.bold) {
         preWrite = '<b>';
         postWrite = '</b>';
-      } else if (style.italic) {
+      } else if (style.italic && 
+        // prevent code block's comment add <em></em>
+        block.block_type !== BlockType.Code
+      ) {
         preWrite = '<em>';
         postWrite = '</em>';
       } else if (style.strikethrough) {

@@ -33,6 +33,8 @@ export const prepareDocSlugs = (
     // https://your-host.com/Rd52wbrZ1ifWmXkEUQpcXnf4ntT
     if (URL_STYLE === 'original') {
       fileSlug = doc.node_token;
+    } else if (URL_STYLE === 'absolute') {
+      fileSlug = fileKey;
     }
 
     doc.slug = fileSlug;

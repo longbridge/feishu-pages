@@ -25,13 +25,16 @@ export const TMP_DIR = path.resolve(
   process.env.TMP_DIR || path.join(OUTPUT_DIR, ".tmp"),
 );
 
+export type UrlStyleType = "nested" | "original" | "absolute";
+
 /**
- * "original" | "nested", default: "nested"
+ * "original" | "nested" | "absolute", default: "nested"
  *
  * raw: /G5JwdLWUkopngoxfQtIc7EFSnIg
  * nested: /slug1/slug2/slug3
+ * absolute: /full-slug
  */
-export const URL_STYLE = process.env.URL_STYLE || "nested";
+export const URL_STYLE: UrlStyleType = (process.env.URL_STYLE || "nested") as UrlStyleType;
 /**
  * Skip download assets, for debug speed up.
  */
@@ -274,11 +277,15 @@ export const feishuDownload = async (
   } else {
     console.info("Downloading file", fileToken, "...");
     console.info("File type is", type, "...");
+
+    const fileUrl = type === "board" ?
+      `${feishuConfig.endpoint}/open-apis/board/v1/whiteboards/${fileToken}/download_as_image` :
+      `${feishuConfig.endpoint}/open-apis/drive/v1/medias/${fileToken}/download`;
+
     res = await axios
       .get(
-        type === "board" ?
-          `${feishuConfig.endpoint}/open-apis/board/v1/whiteboards/${fileToken}/download_as_image` :
-          `${feishuConfig.endpoint}/open-apis/drive/v1/medias/${fileToken}/download`,
+        fileUrl
+        ,
         {
           responseType: "stream",
           headers: {
@@ -293,6 +300,9 @@ export const feishuDownload = async (
             " -> ERROR: Failed to download image:",
             fileToken,
             res.status,
+            "URL: ",
+            fileUrl
+
           );
           return null;
         }
@@ -324,6 +334,8 @@ export const feishuDownload = async (
           " -> ERROR: Failed to download image:",
           fileToken,
           message,
+          "URL: ",
+          fileUrl
         );
         // If status is 403
         // https://open.feishu.cn/document/server-docs/docs/drive-v1/faq#6e38a6de

@@ -86,7 +86,7 @@ yarn add feishu-pages
 | `ROOT_NODE_TOKEN`   | 根节点，导出节点以下（不含此节点）的所有内容。                                                                                                                   | NO       |                        |
 | `BASE_URL`          | 自定义文档里面相关文档输出的 URL 前缀，例如：`/docs/`，默认为 `/`，建议采用完整 URL 避免相对路径的各类问题。                                                     | NO       | `/`                    |
 | `ROOT_NODE_TOKEN`   | 从哪个节点 (node_token) 开始导出，例如：`6992046856314306562`，默认为空，走根节点开始。                                                                          | NO       |                        |
-| `URL_STYLE`         | 导出的文档 URL 风格。<br/><br/>- `nested` - 采用层级的 URL 结构，如 `/foo/bar/dar`。<br/>- `original` - 采用一层的 URL 结构，如 `/X80QwaYvjiMWZrk399YcK4q8nCc`。 | NO       | `relative`             |
+| `URL_STYLE`         | 导出的文档 URL 风格。<br/><br/>- `nested` - 采用层级的 URL 结构，如 `/foo/bar/dar`。<br/>- `original` - 采用一层的 URL 结构，如 `/X80QwaYvjiMWZrk399YcK4q8nCc`<br/>- `absolute` -  绝对值地跟随 slug 的 URL 变文件目录结构，如 `/foo/bar/dar`。 | NO       | `relative`             |
 
 ## Usage
 
